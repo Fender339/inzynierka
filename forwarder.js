@@ -1,30 +1,42 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const axios = require('axios');
+const cors = require('cors');
+let mysql = require('mysql');
 
 const app = express();
 const port = 3000;
 
-// Middleware to parse JSON bodies
-app.use(bodyParser.json());
 
-// Endpoint to forward SQL queries
-app.post('/forward-sql', async (req, res) => {
+app.use(cors()); //allow all origin
+app.use(bodyParser.text());
+
+const dbEndpoint = "http://localhost:3306/";
+
+let connection = mysql.createConnection({
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+  });
+
+  connection.connect((err) => { if (err) return console.error(err.message); })
+
+app.post('/', async (req, res) => {
     try {
-        const { sqlQuery, dbEndpoint='localhost:3306' } = req.body;
+        const sqlQuery = req.body;
 
-        if (!sqlQuery || !dbEndpoint) {
-            return res.status(400).json({ error: 'Missing required parameters' });
+        if ( !sqlQuery ) {
+            return res.status(400).send({ error: `Missing required parameters ${sqlQuery}` });
         }
-
-        // Forward the SQL query to the specified DB endpoint
-        const response = await axios.post(dbEndpoint, { sqlQuery });
-
-        // Return the response from the DB endpoint
-        res.json(response.data);
+        connection.query(sqlQuery, [true], (error, results, fields) => {
+            if (error) return console.error(error.message);
+            res.send(results);
+        });
     } catch (error) {
         console.error('Error forwarding SQL query:', error.message);
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(500).send({ error: 'Internal server error' });
     }
 });
 

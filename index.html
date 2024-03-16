@@ -4,32 +4,30 @@
             <title>Form</title>
         </head>
         <body>
-            <button type="button" id="insert" onclick="forwardQuery()">Insert</button>
-            <button type="button" id="select" onclick="forwardQuery()">Select</button>
-            <button type="button" id="update" onclick="forwardQuery()">Update</button>
+            <button type="button" id="insert">Insert</button>
+            <button type="button" id="select">Select</button>
+            <button type="button" id="update">Update</button>
             <span id="result"></span>
         </body>
         <script>
             // Function to send SQL query to the forwarder
             function forwardQuery(sqlQuery) {
                 // Specify the endpoint where your Express.js application is running
-                const forwarderEndpoint = 'http://localhost:3000/forward-sql';
+                const forwarderEndpoint = 'http://localhost:3000/';
 
                 // Send the SQL query to the forwarder endpoint
                 fetch(forwarderEndpoint, {
                 method: 'POST',
+                body: sqlQuery,
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*',
-                    'Access-Control-Allow-Methods': 'POST, GET, OPTIONS'
-                },
-                body: JSON.stringify({ sqlQuery })
+                    'Content-Type': 'text/plain'
+                }
                 })
                 .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
-                return response.json();
+                return response.text();
                 })
                 .then(data => {
                 console.log('Response from forwarder:', data);
