@@ -7,6 +7,7 @@
             <button type="button" id="insert">Insert</button>
             <button type="button" id="select">Select</button>
             <button type="button" id="update">Update</button>
+            <button type="button" id="delete">Delete</button>
             <span id="result"></span>
         </body>
         <script>
@@ -40,18 +41,27 @@
             const insert = document.getElementById('insert');
             const select = document.getElementById('select');
             const update = document.getElementById('update');
+            const del = document.getElementById('delete');
 
             // Attach click event listeners to each button
             insert.addEventListener('click', function() {
-                forwardQuery("insert into testtable (date, comment, number) values ('2024-01-01', 'testowy', 2)");
+                forwardQuery("insert");
+                //forwardQuery("insert into testtable (date, comment, number) values ('2024-01-01', 'testowy', 2)");
             });
 
             select.addEventListener('click', function() {
-                forwardQuery("select * from testtable");
+                forwardQuery("select");
+                //forwardQuery("select * from testtable");
             });
 
             update.addEventListener('click', function() {
-                forwardQuery("update testtable set comment='testowy test' where id=2");
+                forwardQuery("update");
+                //forwardQuery("update testtable set comment='testowy test' where id=2");
+            });
+
+            del.addEventListener('click', function() {
+                forwardQuery("delete");
+                //forwardQuery("select * from testtable");
             });
         </script>
     </html>
