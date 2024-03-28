@@ -47,8 +47,10 @@ app.post('/', async (req, res) => {
         switch ( queryType )
         {
             case 'select': 
-                sqlQuery = 'select * from testtable';
-                sendQuery(sqlQuery);
+                for(let i = 0; i < 100000; i++) {
+                    sqlQuery = `select * from testtable where id = ${ i+1 }`;
+                    sendQuery(sqlQuery); 
+                }
                 break;
             case 'insert': 
                 for(let i = 0; i < 100000; i++) {  
@@ -63,11 +65,13 @@ app.post('/', async (req, res) => {
                 }
                 break;
             case 'delete': 
-                sqlQuery = `delete from testtable`;
-                sendQuery(sqlQuery);
+                for(let i = 0; i < 100000; i++) {
+                    sqlQuery = `delete from testtable where id = ${ i+1 }`;
+                    sendQuery(sqlQuery); 
+                }
                 break;
         }
-        res.send(``);
+        res.send(`done`);
     } catch (error) {
         console.error('Error forwarding SQL query:', error.message);
         res.status(500).send({ error: 'Internal server error' });
